@@ -1,0 +1,48 @@
+nft.sol
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.0;
+
+import "https://github.com/0xcert/ethereum-erc721/src/contracts/tokens/nf-token-metadata.sol";
+import "https://github.com/0xcert/ethereum-erc721/src/contracts/ownership/ownable.sol";
+
+contract newNFT is NFTokenMetadata, Ownable {
+    constructor() {
+        nftName = "Synth NFT";
+        nftSymbol = "SYN";
+    }
+    function mint(address _to, uint256 _tokenId, string calldata _uri) external onlyOwner{
+        super._mint(_to,_tokenId);
+        super._setTokenUri(_tokenId, _uri);
+    }
+}
+
+minttoken.sol
+
+pragma solidity ^0.8.4;
+contract coin{
+    address public minter;
+    mapping (address => uint) public balances;      // address is linked to balances 
+    event sent( address from, address to, uint amount);     //current state of contract wrt login, amount can't be negative
+    
+    constructor(){
+        minter = msg.sender;
+    }       //constructor can't be changed at all; one person can be minter
+    
+    function mint (address receiver, uint amount) public {
+        require (msg.sender == minter);     //require statement; send money only if money is present in account; like If
+        balances[receiver] += amount; 
+    }       //minter to person to be sent
+
+    //if short on balance, give error of insufficient balances
+    
+    error insufficientbalances (uint requested, uint available);
+    function send(address receiver, uint amount) public{
+        if(amount>balances[msg.sender]) 
+        revert insufficientbalances({ requested : amount, 
+        available : balances[msg.sender]});
+        balances[msg.sender] -= amount;
+        balances[receiver] +=amount;
+        emit sent(msg.sender, receiver, amount);
+    }
+    }
+    

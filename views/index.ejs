@@ -1,0 +1,54 @@
+<%-include("header") -%>
+
+
+
+    <main role="main" class="strap-main js-strap-main">
+      <div class="strap-bar">
+        <a href="#" class="strap-toggle js-strap-toggle"><span class="oi oi-menu"></span></a>
+        <div class="strap-main-site-logo"><a href="/">Kalaakrti</a></div>
+      </div>
+      <div class="card-columns">
+
+        <!-- <div class="card">
+            <div class="embed-responsive embed-responsive-16by9">
+              <video class="card-img-top strap-animate embed-responsive-item" src='videos/vid_1.mp4' allowfullscreen controls poster="thumb/thumb_1.png"></video>
+            </div>
+            <div class="card-body">
+              <p class="card-text" style="background: none !important;">2 ETH</p>
+              <button type="button" class="btn btn-outline-dark">Buy Now!</button>
+            </div>
+        </div> -->
+
+
+      <% for(var i=1; i < 9; i++) { %>
+        <div class="card">
+            <div class="embed-responsive embed-responsive-16by9">
+              <video class="card-img-top strap-animate embed-responsive-item" src='videos/vid_<%=i%>.mp4' allowfullscreen poster="thumb/thumb_<%=i%>.png"></video>
+            </div>
+            <div class="card-body">
+              <p class="card-text" style="background: none !important;">2 ETH</p>
+              <button type="button" class="btn btn-outline-dark"> <a href="/single_1">Buy Now!</a></button>
+            </div>
+        </div>
+        <% } %>
+
+
+          <!-- <div class="card">
+            <!-- <a href="single.html"> -->
+              <!-- <div class="embed-responsive embed-responsive-16by9"> -->
+                <!-- <figcaption class="figure-caption text-end">A caption for the above image.</figcaption> -->
+                <!-- <video class="card-img-top strap-animate embed-responsive-item" src='videos/vid_.mp4' allowfullscreen></video>
+              </div>
+              <div class="card-body">
+                <p class="card-text" style="background: none !important;">2 ETH</p>
+                <button type="button" class="btn btn-outline-dark">Buy Now!</button>
+              </div> -->
+            <!-- </a> -->
+          <!-- </div> --> -->
+
+
+
+
+
+      <!-- footer -->
+    <%-include("footer") -%>

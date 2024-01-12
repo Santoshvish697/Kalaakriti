@@ -1,0 +1,76 @@
+<div class="container-fluid d-md-none">
+  <div class="row">
+    <div class="col-md-12">
+      <ul class="list-unstyled d-flex strap-aside-social">
+        <li><a href="#" class="p-2"><span class="icon-twitter"></span></a></li>
+        <li><a href="#" class="p-2"><span class="icon-instagram"></span></a></li>
+        <li><a href="#" class="p-2"><span class="icon-github"></span></a></li>
+      </ul>
+      <p>&copy; 2021<br> All Rights Reserved. RVCE</p></div>
+  </div>
+</div>
+
+</main>
+
+
+<script src="js/jquery-3.2.1.slim.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.waypoints.min.js"></script>
+<script src="js/imagesloaded.pkgd.min.js"></script>
+
+<script src="js/main.js"></script>
+
+<script>
+    window.userWalletAddress = null
+    const loginButton = document.getElementByClasses('loginButton')
+    const userWallet = document.getElementByClasses('userWallet')
+
+    function toggleButton() {
+      if (!window.ethereum) {
+        loginButton.innerText = 'MetaMask is not installed'
+        loginButton.classList.remove('bg-purple-500', 'text-white')
+        loginButton.classList.add('bg-gray-500', 'text-gray-100', 'cursor-not-allowed')
+        return false
+      }
+
+      loginButton.addEventListener('click', loginWithMetaMask)
+    }
+
+    async function loginWithMetaMask() {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+        .catch((e) => {
+          console.error(e.message)
+          return
+        })
+      if (!accounts) { return }
+
+      window.userWalletAddress = accounts[0]
+      userWallet.innerText = window.userWalletAddress
+      loginButton.innerText = 'Sign out of MetaMask'
+
+      loginButton.removeEventListener('click', loginWithMetaMask)
+      setTimeout(() => {
+        loginButton.addEventListener('click', signOutOfMetaMask)
+      }, 200)
+    }
+
+    function signOutOfMetaMask() {
+      window.userWalletAddress = null
+      userWallet.innerText = ''
+      loginButton.innerText = 'Sign in with MetaMask'
+
+      loginButton.removeEventListener('click', signOutOfMetaMask)
+      setTimeout(() => {
+        loginButton.addEventListener('click', loginWithMetaMask)
+      }, 200)
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      toggleButton()
+    });
+  </script>
+
+</body>
+</html>
