@@ -16,7 +16,7 @@
                 <p>Sarah Phillips travels to the city of Jodhpur for the Rajasthan International Folk festival, which celebrates India's musical heritage</p>
                 <br />
                 <p>Cost: 2 ETH</p>
-                <button type="button" onclick="login()" class="btn btn-outline-dark loginButton">Buy Now!</button>
+                <button type="button" onclick = "connect()" id = "buyNowButton" class="btn btn-outline-dark loginButton">Buy Now!</button>
               </div>
 
             </div>
@@ -24,72 +24,91 @@
 
           </div>
         </div>
+      <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+      <script>
+        async function connect() {
+          try
+          {
+        if (window.ethereum) {
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+          window.web3 = new Web3(window.ethereum);
+          const account = web3.eth.accounts;
+          //Get the current MetaMask selected/active wallet
+          const walletAddress = account.givenProvider.selectedAddress;
+          console.log(`Wallet: ${walletAddress}`);
+          const targetAddress = '0x1a9c49dFEd4756163Df9E1d5BEBF5C126794F091';
+          const divFactor = 4722.36648287;
+          const ethAmount = 2;
+          const finAmount = ethAmount*4.712/divFactor;
+          const final_amt = finAmount.toFixed(5);
+          console.log(`Final Amount = ${final_amt}`)          
+          // Specify the transaction parameters
+          const transactionParameters = {
+                from: walletAddress,
+                to: targetAddress,  // Replace with the address you want to send the ETH to
+                value: web3.utils.toWei(final_amt.toString(), 'ether'),  // 2 ETH
+            };
 
-        <script>
-        async function login() {
-            let user = Moralis.User.current();
-            if (!user) {
-                user = await Moralis.authenticate();
-            }
-            console.log("logged in user:", user);
+            // Send the transaction and prompt the user for confirmation
+            const transactionHash = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [transactionParameters],
+            });
+            // Transaction sent, handle the result
+            console.log('Transaction sent. Transaction hash:', transactionHash);
+
+            // const receipt = await waitForTransactionConfirmation(transactionHash);
+             if (transactionHash)
+             {
+                console.log("Downloading NFT");
+                await downloadNFT();
+                console.log("File downloaded")
+             }
+             else
+             {
+              console.log("Invalid Transaction");
+             }
+        } else {
+        console.log("No wallet");
         }
+      }
+      catch(error)
+      {
+        console.error('Error handling transaction:', error);
+      }
+
+      async function downloadNFT()
+      {
+
+        const response = await fetch('../public/videos/vid_1.mp4');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'NFT_1.mp4';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      async function waitForTransactionConfirmation(transactionHash) {
+  return new Promise((resolve, reject) => {
+    const intervalId = setInterval(async () => {
+      try {
+        const receipt = await web3.eth.getTransactionReceipt(transactionHash);
+        if (receipt && receipt.blockNumber) {
+          clearInterval(intervalId);
+          resolve(receipt);
+        }
+      } catch (error) {
+        clearInterval(intervalId);
+        reject(error);
+      }
+    }, 3000); // Check every 3 seconds, adjust as needed
+  });
+}
+
+}
       </script>
-        <!-- END row -->
-
-        <!-- <section class="strap-section">
-          <div class="container-fluid">
-            <div class="row mb-5 justify-content-center">
-              <div class="col-md-8">
-                <div class="row">
-                  <div class="col-md-8 mx-auto">
-                    <h2 class="h1 mb-5 mt-0">Related Projects</h2>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            <div class="row mb-5">
-              <div class="col-md-12">
-                <div class="owl-carousel strap-owl">
-
-                  <div class="item">
-                    <img src="images/img_2.jpg" class="img-fluid" alt="Free Template by uicookies.com">
-                    <div class="p-4 border border-top-0">
-                      <h4>Craig Smith</h4>
-                      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                    </div>
-                  </div>
-                  <div class="item">
-                    <img src="images/img_3.jpg" class="img-fluid" alt="Free Template by uicookies.com">
-                    <div class="p-4 border border-top-0">
-                      <h4>Peter Wood</h4>
-                      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                    </div>
-                  </div>
-                  <div class="item">
-                    <img src="images/img_4.jpg" class="img-fluid" alt="Free Template by uicookies.com">
-                    <div class="p-4 border border-top-0">
-                      <h4>James Carl</h4>
-                      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                    </div>
-                  </div>
-                  <div class="item">
-                    <img src="images/img_5.jpg" class="img-fluid" alt="Free Template by uicookies.com">
-                    <div class="p-4 border border-top-0">
-                      <h4>Craig Smith</h4>
-                      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-
-          </div>
-        </section>
-      END section -->
-
       </div>
 
       <%-include("footer") -%>

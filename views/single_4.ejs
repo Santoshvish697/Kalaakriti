@@ -20,9 +20,93 @@
               </div>
 
             </div>
-
-
           </div>
+
+          <script src="https://cdn.jsdelivr.net/npm/web3@1.5.3/dist/web3.min.js"></script>
+      <script>
+        async function connect() {
+          try
+          {
+        if (window.ethereum) {
+          await window.ethereum.request({ method: "eth_requestAccounts" });
+          window.web3 = new Web3(window.ethereum);
+          const account = web3.eth.accounts;
+          //Get the current MetaMask selected/active wallet
+          const walletAddress = account.givenProvider.selectedAddress;
+          console.log(`Wallet: ${walletAddress}`);
+          const targetAddress = '0x1a9c49dFEd4756163Df9E1d5BEBF5C126794F091';
+          const divFactor = 4722.36648287;
+          const ethAmount = 2;
+          const finAmount = ethAmount*4.712/divFactor;
+          const final_amt = finAmount.toFixed(5);
+          console.log(`Final Amount = ${final_amt}`)          
+          // Specify the transaction parameters
+          const transactionParameters = {
+                from: walletAddress,
+                to: targetAddress,  // Replace with the address you want to send the ETH to
+                value: web3.utils.toWei(final_amt.toString(), 'ether'),  // 2 ETH
+            };
+
+            // Send the transaction and prompt the user for confirmation
+            const transactionHash = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [transactionParameters],
+            });
+            // Transaction sent, handle the result
+            console.log('Transaction sent. Transaction hash:', transactionHash);
+
+            // const receipt = await waitForTransactionConfirmation(transactionHash);
+             if (transactionHash)
+             {
+                console.log("Downloading NFT");
+                await downloadNFT();
+                console.log("File downloaded")
+             }
+             else
+             {
+              console.log("Invalid Transaction");
+             }
+        } else {
+        console.log("No wallet");
+        }
+      }
+      catch(error)
+      {
+        console.error('Error handling transaction:', error);
+      }
+
+      async function downloadNFT()
+      {
+
+        const response = await fetch('../public/videos/vid_1.mp4');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'NFT_1.mp4';
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      async function waitForTransactionConfirmation(transactionHash) {
+  return new Promise((resolve, reject) => {
+    const intervalId = setInterval(async () => {
+      try {
+        const receipt = await web3.eth.getTransactionReceipt(transactionHash);
+        if (receipt && receipt.blockNumber) {
+          clearInterval(intervalId);
+          resolve(receipt);
+        }
+      } catch (error) {
+        clearInterval(intervalId);
+        reject(error);
+      }
+    }, 3000); // Check every 3 seconds, adjust as needed
+  });
+}
+
+}
+      </script>
         </div>
         <!-- END row -->
 
